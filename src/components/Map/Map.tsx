@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { LatLngExpression } from "leaflet";
 import { MapContainer, TileLayer, Marker, Tooltip, Polyline } from "react-leaflet";
+import { useHistory, } from 'react-router-dom';
 import { connect } from "react-redux";
+import MarkerClusterGroup from 'react-leaflet-markercluster';
 import { setPlacePreviewVisibility, setSelectedPlace } from "../../store/actions";
 import { IState, Place } from "../../store/models";
 import AddMarker from "./AddMarker";
@@ -17,6 +19,7 @@ const Map = ({
 }: any) => {
   const defaultPosition: LatLngExpression = [48.864716, 2.349]; // Paris position
   const [polyLineProps, setPolyLineProps] = useState([]);
+  const history = useHistory();
 
   useEffect(() => {
     setPolyLineProps(places.reduce((prev: LatLngExpression[], curr: Place) => {
@@ -26,16 +29,7 @@ const Map = ({
   }, [places]);
 
   const showPreview = (place: Place) => {
-    if (isVisible) {
-      togglePreview(false);
-      setPlaceForPreview(null);
-    }
-
-    if (selectedPlace?.title !== place.title) {
-      setTimeout(() => {
-        showPlace(place);
-      }, 400);
-    }
+    window.open(`https://maps.google.com/?q=${place.position.toString()}`, '_blank')
   };
 
   const showPlace = (place: Place) => {
@@ -49,23 +43,26 @@ const Map = ({
         center={defaultPosition}
         zoom={13}
         scrollWheelZoom={false}
-        style={{ height: "100vh" }}
-        zoomControl={false}
+        style={{ height: "80vh" }}
+        zoomControl={true}
       >
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <Polyline positions={polyLineProps} />
-        {places.map((place: Place) => (
-          <Marker
-            key={place.title}
-            position={place.position}
-            eventHandlers={{ click: () => showPreview(place) }}
-          >
-            <Tooltip>{place.title}</Tooltip>
-          </Marker>
-        ))}
+        {/* <MarkerClusterGroup> */}
+          {places.map((place: Place) => (
+            <Marker
+              key={place.title}
+              position={place.position}
+              eventHandlers={{ click: () => showPreview(place) }}
+            >
+              <Tooltip>{place.title}</Tooltip>
+            </Marker>
+
+          ))}
+        {/* </MarkerClusterGroup> */}
         <AddMarker />
       </MapContainer>
     </div>

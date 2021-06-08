@@ -42,7 +42,7 @@ const Map = ({
       <MapContainer
         center={defaultPosition}
         zoom={13}
-        scrollWheelZoom={false}
+        scrollWheelZoom={true}
         style={{ height: "80vh" }}
         zoomControl={true}
       >
@@ -50,7 +50,7 @@ const Map = ({
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Polyline positions={polyLineProps} />
+        {/* <Polyline positions={polyLineProps} /> */}
         {/* <MarkerClusterGroup> */}
           {places.map((place: Place) => (
             <Marker
